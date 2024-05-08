@@ -493,6 +493,19 @@ func (v Version) Value() (driver.Value, error) {
 	return v.String(), nil
 }
 
+func (v Version) Segments() []string {
+	// there's always going to be at least three segments
+	s := []string{fmt.Sprint(v.major), fmt.Sprint(v.minor), fmt.Sprint(v.patch)}
+	if v.pre != "" {
+		s = append(s, v.pre)
+	}
+
+	if v.metadata != "" {
+		s = append(s, v.metadata)
+	}
+	return s
+}
+
 func compareSegment(v, o uint64) int {
 	if v < o {
 		return -1

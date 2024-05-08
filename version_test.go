@@ -643,6 +643,45 @@ func TestDriverValuer(t *testing.T) {
 	}
 }
 
+func TestSegments(t *testing.T) {
+	tests := []struct {
+		version string
+		size    int
+	}{
+		{"1.2.3", 3},
+		{"1.2.3+test.01", 4},
+		{"1.2.3-alpha.-1", 4},
+		{"v1.2.3", 3},
+		{"1.0", 3},
+		{"v1.0", 3},
+		{"1", 3},
+		{"v1", 3},
+		{"1.2-5", 4},
+		{"v1.2-5", 4},
+		{"1.2-beta.5", 4},
+		{"v1.2-beta.5", 4},
+		{"1.2.0-x.Y.0+metadata", 5},
+		{"v1.2.0-x.Y.0+metadata", 5},
+		{"1.2.0-x.Y.0+metadata-width-hypen", 5},
+		{"v1.2.0-x.Y.0+metadata-width-hypen", 5},
+		{"1.2.3-rc1-with-hypen", 4},
+		{"v1.2.3-rc1-with-hypen", 4},
+	}
+
+	for _, tc := range tests {
+		v, err := NewVersion(tc.version)
+		if err != nil {
+			t.Errorf("Error parsing version: %s", err)
+		}
+
+		if len(v.Segments()) != tc.size {
+			t.Errorf("Error counting segments: got=%q, want=%q",
+				fmt.Sprint(len(v.Segments())), fmt.Sprint(tc.size))
+		}
+	}
+
+}
+
 func TestValidatePrerelease(t *testing.T) {
 	tests := []struct {
 		pre      string
