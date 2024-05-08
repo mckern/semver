@@ -138,10 +138,19 @@ func TestConstraintCheck(t *testing.T) {
 		{"2", "2.1.1", true},
 		{"2.1", "2.1.1", true},
 		{"2.1", "2.2.1", false},
+
+		// pessimistic constraints are not technically
+		// part of the semver spec, but are best defined by the
+		// RubyGems/Bundler implementation:
+		// https://guides.rubygems.org/patterns/#pessimistic-version-constraint
 		{"~1.2.3", "1.2.4", true},
 		{"~1.2.3", "1.3.4", false},
 		{"~1.2", "1.2.4", true},
-		{"~1.2", "1.3.4", false},
+		{"~1.2", "1.3.4", true},
+		{"~1.2", "1.2.4", true},
+		{"~1.2", "1.3.4", true},
+		{"~1.2", "2.0", false},
+		{"~1.2", "2.0.0", false},
 		{"~1", "1.2.4", true},
 		{"~1", "2.3.4", false},
 		{"~0.2.3", "0.2.5", true},
